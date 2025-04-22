@@ -112,8 +112,8 @@
                 mysqli_commit($conn);
                 $success = "Order created successfully.";
 
-                // Redirect to confirmation page
-                header("Location: order_confirmation.php?order_id=" . $order_id);
+                // Redirect to orders list with status message
+                header("Location: view_orders.php?message=Order added successfully");
                 exit;
 
             } catch (Exception $e) {
@@ -134,94 +134,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/CSS/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<body>
-
-    <!-- ================ HEADER SECTION ================ -->
-    <header>
-        <h1>Create New Order</h1>
-        <a href="../dashboard.php" class="back-link">&larr; Back to Dashboard</a>
-    </header>
-
-    <!-- =============== ERROR MESSAGES SECTION =============== -->
-    <?php if (!empty($errors)): ?>
-        <div class="error">
-            <?php foreach ($errors as $error): ?>
-                <p><?php echo htmlspecialchars($error); ?></p>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- =============== SUCCESS MESSAGE SECTION =============== -->
-    <?php if ($success): ?>
-        <div class="success">
-            <p><?php echo htmlspecialchars($success); ?></p>
-        </div>
-    <?php endif; ?>
-
-    <!-- ================ ORDER FORM SECTION ================ -->
-    <div class="form-container">
-        <form method="POST" action="" id="orderForm">
-            
-            <!-- ========== CUSTOMER SELECTION ========== -->
-            <div class="form-group">
-                <label for="customer_id">Select Customer:</label>
-                <select name="customer_id" id="customer_id" required class="form-control">
-                    <option value="">-- Select Customer --</option>
-                    <?php while ($customer = mysqli_fetch_assoc($customers_result)): ?>
-                        <option value="<?php echo htmlspecialchars($customer['customer_id']); ?>">
-                            <?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </div>
-
-            <!-- ========== ORDER ITEMS SECTION ========== -->
-            <div id="orderItems">
-                <h3>Order Items</h3>
-                <div class="order-item">
-                    <select name="items[0][product_id]" id="product_id" class="product-select form-control" required>
-                        <option value="">-- Select Product --</option>
-                        <?php 
-                        mysqli_data_seek($products_result, 0);
-                        while ($product = mysqli_fetch_assoc($products_result)): 
-                        ?>
-                            <option value="<?php echo htmlspecialchars($product['product_id']); ?>"
-                                    data-price="<?php echo htmlspecialchars($product['price']); ?>"
-                                    data-stock="<?php echo htmlspecialchars($product['stock_quantity']); ?>">
-                                <?php echo htmlspecialchars($product['name']); ?>
-                                (Stock: <?php echo htmlspecialchars($product['stock_quantity']); ?>)
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                    <input type="number" name="items[0][quantity]" placeholder="Quantity" min="1" required class="form-control">
-                    <input type="hidden" name="items[0][price]" class="price-input">
+<body class="bg-light">
+    <div class="container py-4 d-flex flex-column justify-content-center min-vh-100">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card card-custom bg-secondary-custom shadow-sm p-4">
+                    <h2 class="mb-3 text-center text-accent">Create New Order</h2>
+                    <?php if (!empty($errors)): ?>
+                        <div class="alert alert-danger">
+                            <?php foreach ($errors as $error): ?>
+                                <p class="mb-0"><?php echo htmlspecialchars($error); ?></p>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($success): ?>
+                        <div class="alert alert-success">
+                            <p class="mb-0"><?php echo htmlspecialchars($success); ?></p>
+                        </div>
+                    <?php endif; ?>
+                    <form method="POST" action="" id="orderForm">
+                        <div class="mb-3">
+                            <label for="customer_id" class="form-label">Select Customer</label>
+                            <select name="customer_id" id="customer_id" class="form-select" required>
+                                <option value="">-- Select Customer --</option>
+                                <?php 
+                                mysqli_data_seek($customer_result, 0);
+                                while ($customer = mysqli_fetch_assoc($customer_result)): ?>
+                                    <option value="<?php echo htmlspecialchars($customer['customer_id']); ?>">
+                                        <?php echo htmlspecialchars($customer['first_name'] . ' ' . $customer['last_name']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <h3 class="mt-4 mb-3">Order Items</h3>
+                        <div id="orderItems">
+                            <div class="row g-2 align-items-center mb-2 order-item">
+                                <div class="col-7 col-md-8">
+                                    <select name="items[0][product_id]" id="product_id" class="product-select form-select" required>
+                                        <option value="">-- Select Product --</option>
+                                        <?php 
+                                        mysqli_data_seek($product_result, 0);
+                                        while ($product = mysqli_fetch_assoc($product_result)): ?>
+                                            <option value="<?php echo htmlspecialchars($product['product_id']); ?>"
+                                                    data-price="<?php echo htmlspecialchars($product['price']); ?>"
+                                                    data-stock="<?php echo htmlspecialchars($product['stock_quantity']); ?>">
+                                                <?php echo htmlspecialchars($product['name']); ?>
+                                                (Stock: <?php echo htmlspecialchars($product['stock_quantity']); ?>)
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+                                <div class="col-5 col-md-4">
+                                    <input type="number" name="items[0][quantity]" placeholder="Quantity" min="1" required class="form-control">
+                                    <input type="hidden" name="items[0][price]" class="price-input">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addOrderItem()" class="btn btn-secondary mb-2">Add Another Item</button>
+                        <button type="submit" class="btn btn-custom w-100">Create Order</button>
+                    </form>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="../dashboard.php" class="btn btn-link">&larr; Back to Dashboard</a>
+                        <a href="view_orders.php" class="btn btn-link">View Orders</a>
+                    </div>
                 </div>
             </div>
-
-            <!-- ========== ACTION BUTTONS ========== -->
-            <button type="button" onclick="addOrderItem()" class="btn btn-secondary">Add Another Item</button>
-            <button type="submit" class="btn btn-primary">Create Order</button>
-        </form>
-    </div>   
-
-    <!-- ================ JAVASCRIPT SECTION ================ -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let itemCount = 1;
-
         // Function to dynamically add new order item rows
         function addOrderItem() {
             const container = document.getElementById('orderItems');
             const newItem = document.createElement('div');
-            newItem.className = 'order-item';
-
+            newItem.className = 'row g-2 align-items-center mb-2 order-item';
             // Clone product dropdown
             const originalSelect = document.getElementById('product_id');
             const select = originalSelect.cloneNode(true);
             select.name = `items[${itemCount}][product_id]`;
-            select.id = ''; // remove ID to prevent duplicates
-
+            select.id = '';
+            select.value = '';
+            select.classList.add('form-select');
             // Create quantity input
             const quantity = document.createElement('input');
             quantity.type = 'number';
@@ -230,34 +228,33 @@
             quantity.min = '1';
             quantity.required = true;
             quantity.className = 'form-control';
-
             // Create hidden price input
             const price = document.createElement('input');
             price.type = 'hidden';
             price.name = `items[${itemCount}][price]`;
             price.className = 'price-input';
             price.required = true;
-
             // Append elements to order item container
-            newItem.appendChild(select);
-            newItem.appendChild(quantity);
-            newItem.appendChild(price);
-
-            // Add new item to DOM
+            const col1 = document.createElement('div');
+            col1.className = 'col-7 col-md-8';
+            col1.appendChild(select);
+            const col2 = document.createElement('div');
+            col2.className = 'col-5 col-md-4';
+            col2.appendChild(quantity);
+            col2.appendChild(price);
+            newItem.appendChild(col1);
+            newItem.appendChild(col2);
             container.appendChild(newItem);
             itemCount++;
         }
-
         // Set price value when product selection changes
         document.addEventListener('change', function(e) {
             if (e.target.classList.contains('product-select')) {
                 const selected = e.target.options[e.target.selectedIndex];
-                const priceInput = e.target.parentNode.querySelector('.price-input');
+                const priceInput = e.target.parentNode.parentNode.querySelector('.price-input');
                 priceInput.value = selected.dataset.price;
             }
         });
     </script>
-
 </body>
 </html>
-

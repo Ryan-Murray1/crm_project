@@ -1,0 +1,153 @@
+/* ================================
+   RESET & BASE STYLES
+================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    /* Color Palette */
+    --primary: #1E1E2F;
+    --accent: #00C2A8;
+    --secondary: #F5F5F5;
+    --highlight: #F9A826;
+    --text: #333333;
+  
+    /* Typography */
+    --font-base: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  
+    /* Spacing */
+    --padding: 1.5rem;
+    --radius: 16px;
+    --shadow-light: 0 6px 18px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  body {
+    font-family: var(--font-base);
+    line-height: 1.6;
+    color: var(--text);
+    background-color: #fff;
+  }
+  
+  /* ================================
+     TYPOGRAPHY & LINKS
+  ================================ */
+  a {
+    text-decoration: none;
+    color: var(--accent);
+    transition: color 0.2s ease-in-out;
+  }
+  a:hover {
+    color: var(--highlight);
+  }
+  
+  /* ================================
+     LAYOUT UTILITIES
+  ================================ */
+  .center-vertically {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .container {
+    max-width: 1200px;
+    padding: var(--padding);
+    margin: 0 auto;
+  }
+  
+  /* ================================
+     THEME UTILITIES
+  ================================ */
+  .bg-primary-custom {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+  }
+  .bg-accent-custom {
+    background-color: var(--accent) !important;
+    color: #fff !important;
+  }
+  .bg-secondary-custom {
+    background-color: var(--secondary) !important;
+  }
+  .text-accent {
+    color: var(--accent) !important;
+  }
+  .text-highlight {
+    color: var(--highlight) !important;
+  }
+  .border-accent {
+    border: 2px solid var(--accent) !important;
+  }
+  
+  /* ================================
+     CARD COMPONENT
+  ================================ */
+  .card-custom {
+    border: none;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+    background-color: #fff;
+    /* Remove transition by default; only dashboard will have animation */
+    transition: none !important;
+  }
+  .card-custom:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-light) !important;
+  }
+  .dashboard-animate .card-custom {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  .dashboard-animate .card-custom:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: var(--shadow-hover) !important;
+  }
+  .card-title {
+    color: var(--primary) !important;
+  }
+  .card-custom .list-unstyled a {
+    color: var(--accent) !important;
+    transition: color 0.2s ease-in-out;
+  }
+  .card-custom .list-unstyled a:hover {
+    color: var(--highlight) !important;
+  }
+  .no-card-hover .card-custom {
+    transition: none !important;
+  }
+  .no-card-hover .card-custom:hover {
+    transform: none !important;
+    box-shadow: var(--shadow-light) !important;
+  }
+  
+  /* ================================
+     BUTTON STYLES
+  ================================ */
+  .btn-custom {
+    background-color: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+  }
+  .btn-custom:hover {
+    background-color: var(--highlight);
+  }
+  
+  /* ================================
+     FOOTER
+  ================================ */
+  footer {
+    font-size: 0.9rem;
+    color: #888;
+    padding: 1rem 0;
+    text-align: center;
+  }
+  
